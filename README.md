@@ -1,1 +1,2 @@
-# basic-interpreter
+# Basic Interpreter
+A web-based BASIC interpreter
