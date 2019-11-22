@@ -12,15 +12,32 @@
   </head>
   <body>
     <h1>Basic Interpreter</h1>
-    <textarea class="form-control" id="editor"></textarea>
+    <div style="width: 100%; overflow: hidden;">
+      <div style="width: 49.5%; float: left;">
+        <textarea class="form-control" id="editor" style='float:left'></textarea>
+      </div>
+      <div style="width: 49.5%; float: right;">
+        <textarea class="form-control" id="output" style='float:right'></textarea>
+      </div>
+    </div>
     <p>Powered by CodeMirror</p>
 
     <link rel="stylesheet" href="lib/codemirror.css">
     <link rel="stylesheet" href="lib/cobalt.css">
     <script src="lib/codemirror.js"></script>
+    <script src="lib/javascript.js"></script>
     <script>
-      var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+      var textArea = document.getElementById("editor");
+      textArea.value = '10 PRINT "Hello, World!\n20 END';
+      var editor = CodeMirror.fromTextArea(textArea, {
+        mode: 'javascript',
         lineNumbers: true,
+        theme: 'cobalt'
+      });
+
+      var textArea = document.getElementById("output");
+      textArea.value = 'Hello, World!';
+      var editor = CodeMirror.fromTextArea(textArea, {
         theme: 'cobalt'
       });
     </script>
