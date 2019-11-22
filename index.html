@@ -4,42 +4,32 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
     <title>Basic Interpreter</title>
   </head>
   <body>
     <h1>Basic Interpreter</h1>
     <div style="width: 100%; overflow: hidden;">
-      <div style="width: 49.5%; float: left;">
+      <div style="width: 60%; float: left;">
+        <div>
+          <h3 style='display: inline-block;'>Editor</h3>
+          <button id='run' style='margin-left: 30%; width: 80px'>RUN</button>
+        </div>
         <textarea class="form-control" id="editor" style='float:left'></textarea>
       </div>
-      <div style="width: 49.5%; float: right;">
-        <textarea class="form-control" id="output" style='float:right'></textarea>
+      <div style="width: 39.5%; float: right;">
+        <h3>Console</h3>
+        <textarea class="form-control" id="console" style='float:right'></textarea>
       </div>
     </div>
     <p>Powered by CodeMirror</p>
-
+    <!-- Codemirror styling scripts -->
     <link rel="stylesheet" href="lib/codemirror.css">
     <link rel="stylesheet" href="lib/cobalt.css">
     <script src="lib/codemirror.js"></script>
     <script src="lib/javascript.js"></script>
-    <script>
-      var textArea = document.getElementById("editor");
-      textArea.value = '10 PRINT "Hello, World!\n20 END';
-      var editor = CodeMirror.fromTextArea(textArea, {
-        mode: 'javascript',
-        lineNumbers: true,
-        theme: 'cobalt'
-      });
-
-      var textArea = document.getElementById("output");
-      textArea.value = 'Hello, World!';
-      var editor = CodeMirror.fromTextArea(textArea, {
-        theme: 'cobalt'
-      });
-    </script>
+    <!-- Main behavior script -->
+    <script src="index.js"></script>
   </body>
 </html>
