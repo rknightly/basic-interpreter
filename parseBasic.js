@@ -10,8 +10,18 @@ function parseBasic(code) {
     lines.push(line.split(' ').slice(1).join(' '));
   })
 
-  let variables = {};
-  for (var i = 0; i<lines.length; i++) {
+  var variables = {};
+  var functions = {};
+  var pointerStack = [];
+  var loops = {
+    // X: {
+    //   value: 1
+    //   max: 5
+    //   step: 0.1
+    //   startIndex: 5
+    // }
+  }
+  for (let i = 0; i<lines.length; i++) {
     let line = lines[i];
     tokens = line.split(' ');
     // Execute line
@@ -19,12 +29,12 @@ function parseBasic(code) {
       case "LET":
         // Introduces the assignment statement, and is required
         let variableName = tokens[1]
-        let variableValue = evalExpression(tokens.slice(3).join(' '), variables)
+        let variableValue = evalExpression(tokens.slice(3).join(' '), variables, functions)
         variables[variableName] = variableValue
         break;
       case "PRINT":
         // Provides free-form output
-        output += evalExpression(tokens.slice(1).join(' '), variables);
+        output += evalExpression(tokens.slice(1).join(' '), variables, functions);
         output += '\n';
         break;
       case "END":
@@ -46,29 +56,60 @@ function parseBasic(code) {
       case "IF":
         // Gives a conditional GOTO
         let comparison = tokens.slice(1, tokens.length-1).join(' ')
-        if (evalExpression(comparison, variables)) {
+        if (evalExpression(comparison, variables, functions)) {
           let lineNum = parseInt(tokens[tokens.length-1])
           i = lineNumToIndex[lineNum];
           i--;
         }
         break;
-
       case "FOR":
         // Introduces the looping construct
+        // Ex: FOR X = -2 TO 2 STEP .1
+        var varName = tokens[1];
+        loops[varName] = {
+          max: parseInt(tokens[5]),
+          step: parseFloat(tokens[7]),
+          startIndex: i+1,
+        }
+        variables[varName] = parseInt(tokens[3])
         break;
       case "NEXT":
         // Terminates the looping construct
+        // Ex: NEXT X
+        var varName = tokens[1];
+        variables[varName] += loops[varName].step;
+        if (variables[varName] <= loops[varName].max) {
+          i = loops[varName].startIndex;
+          i--;
+        } else {
+          console.log("FALSE")
+          delete variables[varName]
+          delete loops[varName]
+        }
         break;
       
       case "GOSUB":
         // Does a GOTO to a subroutine
+        pointerStack.push(i);
+        let newLine = lineNumToIndex[parseInt(tokens[1])];
+        i = newLine;
+        i--;
         break;
       case "RETURN":
         // Returns from the end of the subroutine
+        i = pointerStack.pop();
         break;
       
       case "DEF":
         // Introduces programmer-defined functions
+        // Ex: DEF FNN(X) = EXP(-(X^2/2))/SQR(2*3.14159265)
+        // translate to (X) => EXP(-(X^2/2))/SQR(2*3.14159265)
+        var name = tokens[1].slice(0, tokens[1].indexOf('('))
+        var argument = tokens[1].slice(tokens[1].indexOf('('), 
+                                       tokens[1].indexOf(')')+1);
+        var expression = tokens.slice(3).join(' ')
+        var lamda = argument + ' => ' + expression
+        functions[name] = lamda
       case "DIM":
         // Allows dimensioning arrays
       case "REM":
@@ -95,10 +136,14 @@ function SIN(x) {return Math.sin(x)}
 function SQR(x) {return Math.sqrt(x)}
 function TAN(x) {return Math.tan(x)}
 
-function evalExpression(expression, variables) {
+function evalExpression(expression, variables, functions) {
   // Define variables
-  console.log(Object.entries(variables))
   for ([name, value] of Object.entries(variables)) {
+    let command = "var " + name + " = " + value + ";";
+    eval(command);
+  }
+  // Define functions
+  for ([name, value] of Object.entries(functions)) {
     let command = "var " + name + " = " + value + ";";
     eval(command);
   }

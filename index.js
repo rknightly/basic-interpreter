@@ -5,10 +5,20 @@ var editorMirror = CodeMirror.fromTextArea(editorTextArea, {
   theme: 'cobalt',
 });
 
-let defaultCode = `10 PRINT "Hello, World!"
-15 LET X = 5
-16 PRINT X
-20 END`
+// let defaultCode = `10 LET X = 1
+// 20 PRINT "Hello, World!"
+// 30 LET X = X + 1
+// 40 IF X < 5 20
+// 50 END`
+
+// let defaultCode = `10 FOR X = -2 TO 2 STEP .1
+// 20 PRINT X
+// 30 NEXT X
+// 40 END`
+
+let defaultCode = `10 DEF FNN(X) = EXP(-(X^2/2))/SQR(2*3.14159265)
+20 PRINT FNN(10)
+30 END`
 editorMirror.getDoc().setValue(defaultCode);
 
 var consoleTextArea = document.getElementById("console");
