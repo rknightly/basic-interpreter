@@ -4,7 +4,12 @@ var editorMirror = CodeMirror.fromTextArea(editorTextArea, {
   lineNumbers: true,
   theme: 'cobalt',
 });
-editorMirror.getDoc().setValue('10 PRINT "Hello, World!\n20 END');
+
+let defaultCode = `10 PRINT "Hello, World!"
+15 LET X = 5
+16 PRINT X
+20 END`
+editorMirror.getDoc().setValue(defaultCode);
 
 var consoleTextArea = document.getElementById("console");
 consoleTextArea.value = 'Hello, World!';
@@ -15,6 +20,7 @@ consoleMirror.getDoc().setValue('Hello, World!');
 
 var runButton = document.getElementById("run");
 runButton.onclick = function() {
-  console.log("CLICKED!")
-  consoleMirror.getDoc().setValue('OUTPUT');
+  var code = editorMirror.getDoc().getValue();
+  var result = parseBasic(code);
+  consoleMirror.getDoc().setValue(result);
 }
