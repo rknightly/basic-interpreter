@@ -40,11 +40,17 @@ function parseBasic(code) {
 
       case "GOTO":
         // Does just that, transfers to another line-numbered statement
-        i = lineNumToIndex(parseInt(tokens[1]));
+        i = lineNumToIndex[parseInt(tokens[1])];
         i--;
         break;
       case "IF":
         // Gives a conditional GOTO
+        let comparison = tokens.slice(1, tokens.length-1).join(' ')
+        if (evalExpression(comparison, variables)) {
+          let lineNum = parseInt(tokens[tokens.length-1])
+          i = lineNumToIndex[lineNum];
+          i--;
+        }
         break;
 
       case "FOR":
