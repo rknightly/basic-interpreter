@@ -16,9 +16,23 @@ var editorMirror = CodeMirror.fromTextArea(editorTextArea, {
 // 30 NEXT X
 // 40 END`
 
-let defaultCode = `10 DEF FNN(X) = EXP(-(X^2/2))/SQR(2*3.14159265)
-20 PRINT FNN(10)
-30 END`
+// let defaultCode = `10 DEF FNN(X) = EXP(-(X^2/2))/SQR(2*3.14159265)
+// 20 PRINT FNN(10)
+// 30 END`
+
+let defaultCode = `100 REM PLOT A NORMAL DISTRIBUTION CURVE
+110
+120 DEF FNN(X) = EXP(-(X^2/2))/SQR(2*3.14159265)
+130
+140 FOR X = -2 TO 2 STEP .1
+150 LET Y = FNN(X)
+160 LET Y = INT(100*Y)
+170 FOR Z = 1 TO Y
+180 PRINT " ";
+190 NEXT Z
+200 PRINT "*"
+210 NEXT X
+220 END`
 editorMirror.getDoc().setValue(defaultCode);
 
 var consoleTextArea = document.getElementById("console");

@@ -34,8 +34,7 @@ function parseBasic(code) {
         break;
       case "PRINT":
         // Provides free-form output
-        output += evalExpression(tokens.slice(1).join(' '), variables, functions);
-        output += '\n';
+        output += evalPrintExpression(tokens.slice(1).join(' '), variables, functions);
         break;
       case "END":
         // End of the program (is required)
@@ -67,8 +66,8 @@ function parseBasic(code) {
         // Ex: FOR X = -2 TO 2 STEP .1
         var varName = tokens[1];
         loops[varName] = {
-          max: parseInt(tokens[5]),
-          step: parseFloat(tokens[7]),
+          max: parseInt(evalExpression(tokens[5], variables, functions)),
+          step: tokens.length > 6 ? parseFloat(evalExpression(tokens[7], variables, functions)) : 1,
           startIndex: i+1,
         }
         variables[varName] = parseInt(tokens[3])
@@ -144,8 +143,24 @@ function evalExpression(expression, variables, functions) {
   }
   // Define functions
   for ([name, value] of Object.entries(functions)) {
+    value = value.replace("^", "**")
     let command = "var " + name + " = " + value + ";";
     eval(command);
   }
+  expression = expression.replace("^", "**")
   return eval(expression)
+}
+
+function evalPrintExpression(expression, variables, functions) {
+  let isOpenEnded = !(',;'.includes(expression.slice(-1)));
+  if (!isOpenEnded) {
+    expression = expression.slice(0, -1);
+  }
+  expression = expression.replace(',', '+ "\t\t" + ');
+  expression = expression.replace(';', '+ "" +');
+  let result = evalExpression(expression, variables, functions);
+  if (isOpenEnded) {
+    result += "\n";
+  }
+  return result
 }
