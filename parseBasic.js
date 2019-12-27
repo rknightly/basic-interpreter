@@ -54,8 +54,8 @@ function parseBasic(code) {
         break;
       case "IF":
         // Gives a conditional GOTO
-        let comparison = tokens.slice(1, tokens.length-1).join(' ')
-        if (evalExpression(comparison, variables, functions)) {
+        let comparison = tokens.slice(1, tokens.length-2).join(' ')
+        if (evalBoolExpression(comparison, variables, functions)) {
           let lineNum = parseInt(tokens[tokens.length-1])
           i = lineNumToIndex[lineNum];
           i--;
@@ -149,6 +149,13 @@ function evalExpression(expression, variables, functions) {
   }
   expression = expression.replace("^", "**")
   return eval(expression)
+}
+
+function evalBoolExpression(expression, variables, functions) {
+  expression = expression.replace("=", "==")
+  console.log(expression)
+
+  return evalExpression(expression, variables, functions)
 }
 
 function evalPrintExpression(expression, variables, functions) {
